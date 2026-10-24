@@ -30,6 +30,17 @@ logo3d github
 
 或者以模块方式运行：`python3 -m terminal_logo vim`。
 
+### 单文件版
+
+[`standalone/logo3d.py`](standalone/logo3d.py) 是把整个项目合并成的单个脚本，只下载这一个文件就能运行：
+
+```bash
+curl -O https://raw.githubusercontent.com/KuRRe8/Terminal-3D-Logo/main/standalone/logo3d.py
+python3 logo3d.py
+```
+
+它由 `python3 tools/make_single.py` 从 `terminal_logo/` 源码自动生成；修改源码后重新运行一次即可，测试会检查两者是否一致。
+
 **环境要求**：Python 3.6+，以及支持 24 位真彩色和鼠标上报的终端，例如 iTerm2、Kitty、WezTerm、Alacritty、
 GNOME Terminal、Konsole、Windows Terminal、VS Code 内置终端等。
 
@@ -156,12 +167,14 @@ Wikimedia Commons（C 语言），豆包使用 App Store 上的拟人女孩图�
 
 ```
 logo3d.py               启动脚本
+standalone/logo3d.py    单文件版（自动生成，可单独下载运行）
 terminal_logo/
   app.py                界面、交互、动画、命令行参数
   logos.py              26 个 Logo 的像素画数据与查找
   model.py              像素画 → 体素模型
   render.py             软件光栅化渲染器
   term.py               终端控制、输入解析、差异输出
+tools/make_single.py    生成单文件版（--check 检查是否最新）
 tests/test_basic.py     基础测试（python3 -m unittest discover -s tests）
 ```
 

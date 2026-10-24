@@ -3,6 +3,7 @@
 
 import math
 import os
+import subprocess
 import sys
 import unittest
 
@@ -124,6 +125,26 @@ class TermTests(unittest.TestCase):
 
     def test_text_width(self):
         self.assertEqual(text_width("Logo 列表"), 9)
+
+
+class StandaloneTests(unittest.TestCase):
+    ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    def test_standalone_up_to_date(self):
+        sys.path.insert(0, os.path.join(self.ROOT, "tools"))
+        import make_single
+        with open(make_single.OUT, encoding="utf-8") as f:
+            self.assertEqual(f.read(), make_single.build(),
+                             "standalone/logo3d.py 已过期，请运行 python3 tools/make_single.py")
+
+    def test_standalone_runs_alone(self):
+        script = os.path.join(self.ROOT, "standalone", "logo3d.py")
+        out = subprocess.check_output([sys.executable, "-I", script, "--list"], universal_newlines=True,
+                                      env=dict(os.environ, PYTHONIOENCODING="utf-8"))
+        self.assertIn("共 26 个", out)
+        frame = subprocess.check_output([sys.executable, "-I", script, "doubao", "--print", "--size", "40x12"],
+                                        env=dict(os.environ, PYTHONIOENCODING="utf-8"))
+        self.assertEqual(frame.count(b"\n"), 12)
 
 
 if __name__ == "__main__":
