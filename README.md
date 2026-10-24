@@ -125,7 +125,7 @@ python3 logo3d.py linux --print --size 48x16 --yaw -25 --pitch 12
 
 ## 实现原理
 
-1. **像素画**：每个 Logo 是一张 16~44 像素宽的像素画（见 `terminal_logo/logos.py`），每种颜色可以设置浮雕高度，
+1. **像素画**：每个 Logo 是一张 16~64 像素宽的像素画（见 `terminal_logo/logos.py`），每种颜色可以设置浮雕高度，
    比如 GitHub 的猫、Codex 的 `>_` 会比底板凸出一格，小螃蟹的眼睛凹进去一格。
    部分 Logo 还为背面单独换色：转到背面时，豆包看到的是后脑勺的头发，小螃蟹的背面没有眼睛。
 2. **建模**（`model.py`）：把像素画挤出成体素，同一高度的顶面合并成一个大矩形，相邻高度差处生成侧壁，
@@ -136,6 +136,21 @@ python3 logo3d.py linux --print --size 48x16 --yaw -25 --pitch 12
    并用同步输出（DEC 2026）避免闪烁。在常见终端尺寸下单帧渲染只需几毫秒，可以跑满 60 帧。
 5. **交互**（`app.py`）：SGR 1006 鼠标协议；姿态用四元数表示，拖动绕屏幕坐标轴旋转；单击旋转使用
    “前 14% 时间快速加速、之后三次曲线缓慢减速”的速度曲线。
+
+## Logo 素材来源
+
+所有像素画都由官方 / 公开的 Logo 图片自动转换而来（把 SVG 渲染成高分辨率图片后，按格取主色并归到品牌色上）：
+[simple-icons](https://simpleicons.org/)、[devicon](https://devicon.dev/)、[LobeHub Icons](https://lobehub.com/icons)、
+Wikimedia Commons（C 语言），豆包使用 App Store 上的拟人女孩图标。Claude 小螃蟹的官方 SVG 本身就是像素画，按它自己的网格取样，结果完全一致。
+
+转换后做过的少量处理：
+
+- 只有单色版本的 Logo 补上了品牌色（GitHub、网易云音乐、Ubuntu、微信的底色与图案分别上色；Red Hat 帽带补成黑色）；
+- Apple、Windows 加了竖直 / 斜向的分段渐变；
+- AMD、LaTeX 原本是黑色，为了在深色背景上看得清改成了白色；
+- C++ 的两个 “+” 在 36 像素下会糊成小方块，按原图位置重画成十字；
+- 镂空处理：被图案包住的空洞填上颜色（小螃蟹的眼睛填成深色凹陷，百度的 “du”、Python 的眼睛、Codex 的 `>_` 填成白色），
+  避免在 3D 里变成透光的洞；DeepSeek 鲸鱼腹部的镂空是原设计的一部分，保留。
 
 ## 项目结构
 

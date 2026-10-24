@@ -132,14 +132,15 @@ HELP_LINES = [
 
 
 def main_color(logo):
+    """列表里色块用的颜色：底板（浮雕高度 <= 0）上最常见的颜色。"""
     counts = {}
     for r in logo.rows:
         for ch in r:
             if ch != ".":
                 counts[ch] = counts.get(ch, 0) + 1
-    ch = max(counts, key=counts.get)
-    h = logo.palette[ch][0].lstrip("#")
-    return int(h, 16)
+    base = dict((c, n) for c, n in counts.items() if logo.palette[c][1] <= 0) or counts
+    ch = max(base, key=base.get)
+    return int(logo.palette[ch][0].lstrip("#"), 16)
 
 
 # ====================================================================== 应用
